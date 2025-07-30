@@ -1,0 +1,13 @@
+[project]
+name = "comp-353-mtl-volleyball-club-gui"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "flask>=3.1.1",
+    "flask-admin>=1.6.1",
+    "flask-sqlalchemy>=3.1.1",
+    "pymysql>=1.1.1",
+    "wtforms==3.1.2",
+]
