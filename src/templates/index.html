@@ -1,11 +1,12 @@
 {% extends 'master.html' %}
 
 {% block content %}
-<h1>Welcome to the MTL Volleyball Club 🏐</h1>
+<div class="container">
+    <h1 class="title is-1 has-text-centered">Welcome to the MTL Volleyball Club 🏐</h1>
 
-<div>
-    <a>Make a payment</a><br>
-    <a>List Locations</a><br>
+    <div class="buttons is-centered mt-5">
+        <a href="/makepayment" class="button is-primary">Make a payment</a>
+        <a href="/listlocations" class="button is-link">List Locations</a>
+    </div>
 </div>
-
 {% endblock %}

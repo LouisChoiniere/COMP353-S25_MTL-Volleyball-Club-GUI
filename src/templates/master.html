@@ -1,23 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <title>MTL Volleyball Club</title>
+    <link rel="icon" type="image/png" href="/static/img/logo.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li>MTL Volleyball Club 🏐</li>
-            <li><a href="/admin">Admin page</a></li>
-            <li><a href="/makepayment">Make Payment</a></li>
-            <li><a href="/listlocations">List Locations</a></li>
-        </ul>
+    <!-- https://bulma.io/documentation/components/navbar/ -->
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="/static/img/logo.png" alt="logo">
+                MTL Volleyball Club
+            </a>
+        </div>
+
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/makepayment">Make Payment</a>
+                <a class="navbar-item" href="/listlocations">List Locations</a>
+            </div>
+
+            <div class="navbar-end">
+                <a class="navbar-item" href="/admin">Admin page</a>
+            </div>
+        </div>
     </nav>
 
-    {% block content %}
-    {% endblock %}
+    <div class="section">
+        {% block content %}
+        {% endblock %}
+    </div>
 </body>
 
 </html>

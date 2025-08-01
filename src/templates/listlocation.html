@@ -1,0 +1,47 @@
+{% extends 'master.html' %}
+
+{% block content %}
+<h2 class="is-size-2">List of the locations available</h2>
+
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Province</th>
+                <th>Postal Code</th>
+                <th>Phone Number</th>
+                <th>Web Address</th>
+                <th>Type (Head, Branch)</th>
+                <th>Capacity</th>
+                <th>General Manager Name</th>
+                <th>Minor Club Members</th>
+                <th>Major Club Members</th>
+                <th>Teams Associated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in locations %}
+            <tr>
+                <td>{{ location.Name }}</td>
+                <td>{{ location.Address }}</td>
+                <td>{{ location.city }}</td>
+                <td>{{ location.Province }}</td>
+                <td>{{ location.PostalCode }}</td>
+                <td>{{ location.Phone }}</td>
+                <td>{{ location.WebAddress }}</td>
+                <td>{{ location.Type }}</td>
+                <td>{{ location.Capacity }}</td>
+                <td>{{ location.GeneralManagerName }}</td>
+                <td>{{ location.MinorClubMembersCount }}</td>
+                <td>{{ location.MajorClubMembersCount }}</td>
+                <td>{{ location.TeamCount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -11,6 +11,6 @@ def create_app():
     db = init_db(app)
     admin = init_flask_admin(app, db)
 
-    init_routes(app)
+    init_routes(app, db)
 
     return app
