@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import text
 
 def init_routes(app, db):
@@ -9,6 +9,31 @@ def init_routes(app, db):
     @app.route("/makepayment")
     def make_payment():
         return render_template('makepayment.html')
+    
+    @app.route("/submit-payment", methods=['POST'])
+    def submit_payment():
+        member_number = request.form['memberNumber']
+        amount = request.form['amount']
+        payment_date = request.form['paymentDate']
+        payment_method = request.form['paymentMethod']
+        payment_method = request.form['instalement']
+
+        db.session.execute(text("""
+            INSERT INTO payment (ClubMemberID, Amount, PaymentDate, MembershipYear, Method, InstallmentNo)
+            VALUES (:memberNumber, :amount, :paymentDate, :membershipYear, :paymentMethod, :instalement)
+        """), {
+            'memberNumber': member_number,
+            'amount': amount,
+            'paymentDate': payment_date,
+            'membershipYear': int(payment_date[:4]) + 1,
+            'paymentMethod': payment_method,
+            'instalement': payment_method
+        })
+        db.session.commit()
+
+        print(member_number)
+
+        return redirect(url_for('index'))
 
     @app.route("/listlocations")
     def list_locations():
