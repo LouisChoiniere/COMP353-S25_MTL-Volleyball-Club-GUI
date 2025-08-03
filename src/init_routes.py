@@ -96,3 +96,7 @@ def init_routes(app, db):
         """))
 
         return render_template('listlocation.html', locations=locations)
+    
+    @app.route("/reports")
+    def reports():
+        return render_template('reports.html')
