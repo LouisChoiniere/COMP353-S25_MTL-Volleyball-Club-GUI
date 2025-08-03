@@ -53,25 +53,46 @@ def init_routes(app, db):
             db.column('MajorClubMembersCount'),
             db.column('TeamCount'),
         ).from_statement(text("""
-SELECT
-    `Name`,
-    `Address`,
-    `city`,
-    `Province`,
-    `PostalCode`,
-    `Phone`,
-    `WebAddress`,
-    `Type`,
-    `Capacity`,
-    '' as `GeneralManagerName`,
-    0 AS `MinorClubMembersCount`,
-    0 AS `MajorClubMembersCount`,
-    0 AS `TeamCount`
-FROM 
-    `location` as l
-ORDER BY 
-    `province` ASC,
-    `city` ASC;
-"""))
+            SELECT
+                l.Name,
+                l.Address,
+                l.city,
+                l.Province,
+                l.PostalCode,
+                l.Phone,
+                l.WebAddress,
+                l.Type,
+                l.Capacity,
+                CONCAT(p.FirstName, ' ', p.LastName) AS GeneralManagerName,
+                SUM(CASE WHEN cm.Type = 'Minor' THEN 1 ELSE 0 END) AS MinorClubMembersCount,
+                SUM(CASE WHEN cm.Type = 'Major' THEN 1 ELSE 0 END) AS MajorClubMembersCount,
+                COUNT(DISTINCT t.TeamID) AS TeamCount
+            FROM
+                location AS l
+                LEFT JOIN operatesat AS op ON op.LocationID = l.LocationID
+                    AND (op.EndDate IS NULL OR op.EndDate < CURDATE())
+                LEFT JOIN personnel AS p ON p.PersonnelID = op.PersonnelID
+                    AND p.Role = 'Administrator'
+                LEFT JOIN clubmemberlocation AS cml ON cml.LocationID = l.LocationID
+                    AND (cml.EndDate IS NULL OR cml.EndDate < CURDATE())
+                LEFT JOIN clubmember cm ON cm.ClubMemberID = cml.ClubMemberID
+                LEFT JOIN team t ON t.LocationID = l.LocationID
+            GROUP BY
+                l.LocationID,
+                l.Name,
+                l.Address,
+                l.city,
+                l.Province,
+                l.PostalCode,
+                l.Phone,
+                l.WebAddress,
+                l.Type,
+                l.Capacity,
+                p.FirstName,
+                p.LastName
+            ORDER BY
+                l.Province ASC,
+                l.city ASC;
+        """))
 
         return render_template('listlocation.html', locations=locations)
