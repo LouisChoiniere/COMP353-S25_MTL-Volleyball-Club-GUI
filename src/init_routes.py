@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for
 from sqlalchemy import text
 
+from init_routes_reports import init_routes_reports
+
 def init_routes(app, db):
+
+    init_routes_reports(app, db)
+
     @app.route("/")
     def index():
         return render_template('index.html')

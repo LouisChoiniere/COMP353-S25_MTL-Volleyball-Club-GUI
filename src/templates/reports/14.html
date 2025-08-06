@@ -1,0 +1,41 @@
+{% extends 'master.html' %}
+
+{% block content %}
+<h3 class="is-size-3">
+    Active Major Club Members Who Joined as Minors
+</h3>
+
+<a href="/reports" class="button is-small my-2">Go Back</a>
+
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>ClubMemberID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>DateJoined</th>
+                <th>Age</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>CurrentLocationName</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clubmember in data %}
+            <tr>
+                <td>{{ clubmember.ClubMemberID }}</td>
+                <td>{{ clubmember.FirstName }}</td>
+                <td>{{ clubmember.LastName }}</td>
+                <td>{{ clubmember.DateJoined }}</td>
+                <td>{{ clubmember.Age }}</td>
+                <td>{{ clubmember.Phone }}</td>
+                <td>{{ clubmember.Email }}</td>
+                <td>{{ clubmember.CurrentLocationNames }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

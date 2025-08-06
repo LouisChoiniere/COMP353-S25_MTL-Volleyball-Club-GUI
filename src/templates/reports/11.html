@@ -1,0 +1,31 @@
+{% extends 'master.html' %}
+
+{% block content %}
+<h3 class="is-size-3">
+    Inactive Club Members (≥2 Locations, ≥2 Years)
+</h3>
+
+<a href="/reports" class="button is-small my-2">Go Back</a>
+
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>ClubMemberID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for clubmember in data %}
+            <tr>
+                <td>{{ clubmember.ClubMemberID }}</td>
+                <td>{{ clubmember.FirstName }}</td>
+                <td>{{ clubmember.LastName }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
