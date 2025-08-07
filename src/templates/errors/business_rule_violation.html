@@ -1,0 +1,12 @@
+{% extends 'master.html' %}
+
+{% block content %}
+<div class="error-container">
+    <h1 class="title is-4">Business Rule Violation</h1>
+    <p class="subtitle">The action you tried to perform violates our business rules.</p>
+    <p class="message">{{ error.orig.diag.message_primary if error.orig.diag else error }}</p>
+
+    <a href="javascript:history.back()" class="button is-secondary">Go Back</a>
+    <a href="{{ url_for('index') }}" class="button is-primary">Return Home</a>
+</div>
+{% endblock %}
