@@ -1,0 +1,51 @@
+{% extends 'master.html' %}
+
+{% block content %}
+<h3 class="is-size-3">
+    Location Details Report (Address, Members, Teams)
+</h3>
+
+<a href="/reports" class="button is-small my-2">Go Back</a>
+
+<div class="table-container">
+    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Province</th>
+                <th>PostalCode</th>
+                <th>Phone</th>
+                <th>WebAddress</th>
+                <th>Type</th>
+                <th>Capacity</th>
+                <th>GeneralManagerName</th>
+                <th>MinorClubMembersCount</th>
+                <th>MajorClubMembersCount</th>
+                <th>TeamCount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location in data %}
+            <tr>
+                <td>{{ location.Name }}</td>
+                <td>{{ location.Address }}</td>
+                <td>{{ location.City }}</td>
+                <td>{{ location.Province }}</td>
+                <td>{{ location.PostalCode }}</td>
+                <td>{{ location.Phone }}</td>
+                <td>{{ location.WebAddress }}</td>
+                <td>{{ location.Type }}</td>
+                <td>{{ location.Capacity }}</td>
+                <td>{{ location.GeneralManagerName }}</td>
+                <td>{{ location.MinorClubMembersCount }}</td>
+                <td>{{ location.MajorClubMembersCount }}</td>
+                <td>{{ location.TeamCount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -2,7 +2,7 @@
 
 {% block content %}
 <h3 class="is-size-3">
-    Inactive Club Members with Multi-Location & Long-Term Membership
+    {{ title }}
 </h3>
 
 <a href="/reports" class="button is-small my-2">Go Back</a>
@@ -11,17 +11,17 @@
     <table class="table is-bordered is-striped is-hoverable is-fullwidth">
         <thead>
             <tr>
-                <th>ClubMemberID</th>
-                <th>FirstName</th>
-                <th>LastName</th>
+                {% for key in keys %}
+                <th>{{ key }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for clubmember in data %}
+            {% for location in data %}
             <tr>
-                <td>{{ clubmember.ClubMemberID }}</td>
-                <td>{{ clubmember.FirstName }}</td>
-                <td>{{ clubmember.LastName }}</td>
+                {% for key in keys %}
+                <td>{{ location[key] }}</td>
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
