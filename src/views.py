@@ -19,3 +19,11 @@ class hobbyView(ModelView):
 class hashobbyView(ModelView):
     form_columns = ["clubmember", "hobby"]
     list_columns = ["clubmember", "hobby"]
+
+class operatesatView(ModelView):
+    form_columns = ["personnel", "location", "StartDate", "EndDate"]
+    list_columns = ["personnel", "location", "StartDate", "EndDate"]
+
+class isrelatedto(ModelView):
+    form_columns = ["clubmember", "familymember", "RelationshipType"]
+    list_columns = ["clubmember", "familymember", "RelationshipType"]

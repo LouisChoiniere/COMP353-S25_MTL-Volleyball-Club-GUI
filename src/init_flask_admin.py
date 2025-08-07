@@ -13,6 +13,12 @@ def init_flask_admin(app, db):
     admin.add_view(views.hobbyView(models.Hobby, db.session))
     admin.add_view(views.hashobbyView(models.HasHobby, db.session))
     admin.add_view(ModelView(models.Payment, db.session))
+    admin.add_view(ModelView(models.TeamFormation, db.session))
+    admin.add_view(ModelView(models.PlaysIn, db.session))
+    admin.add_view(ModelView(models.Personnel, db.session))
+    admin.add_view(views.operatesatView(models.OperatesAt, db.session))
+    admin.add_view(ModelView(models.FamilyMember, db.session))
+    admin.add_view(views.isrelatedto(models.IsRelatedTo, db.session))
 
     admin.init_app(app)
 
