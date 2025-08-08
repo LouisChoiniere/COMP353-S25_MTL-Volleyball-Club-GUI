@@ -100,9 +100,9 @@ def init_routes_reports(app, db):
                 cm.PostalCode,
                 ec.Relationship
             FROM
-                SecondaryFamilyMember sfm
-                JOIN EmergencyContact ec ON sfm.SecondaryID = ec.SecondaryID
-                JOIN ClubMember cm ON ec.ClubMemberID = cm.ClubMemberID
+                secondaryfamilymember sfm
+                JOIN emergencycontact ec ON sfm.SecondaryID = ec.SecondaryID
+                JOIN clubmember cm ON ec.ClubMemberID = cm.ClubMemberID
             ORDER BY
                 sfm.FirstName,
                 sfm.LastName,
@@ -150,14 +150,14 @@ def init_routes_reports(app, db):
                 cm.LastName AS PlayerLastName,
                 pm.RoleInTeam
             FROM
-                TeamFormation tf
-                JOIN FormationTeam ft ON tf.FormationID = ft.FormationID
-                JOIN Team t ON ft.TeamID = t.TeamID
-                JOIN Location l ON t.LocationID = l.LocationID
-                LEFT JOIN TeamCoach tc ON t.TeamID = tc.TeamID
-                LEFT JOIN Personnel p ON tc.PersonnelID = p.PersonnelID
-                JOIN PlaysIn pm ON tf.FormationID = pm.FormationID
-                JOIN ClubMember cm ON pm.ClubMemberID = cm.ClubMemberID
+                teamformation tf
+                JOIN formationteam ft ON tf.FormationID = ft.FormationID
+                JOIN team t ON ft.TeamID = t.TeamID
+                JOIN location l ON t.LocationID = l.LocationID
+                LEFT JOIN teamcoach tc ON t.TeamID = tc.TeamID
+                LEFT JOIN personnel p ON tc.PersonnelID = p.PersonnelID
+                JOIN playsin pm ON tf.FormationID = pm.FormationID
+                JOIN clubmember cm ON pm.ClubMemberID = cm.ClubMemberID
             WHERE
                 l.LocationID = :location_id -- Replace with the desired location ID
                 AND tf.Date BETWEEN :start_date AND :end_date -- Replace with the desired date range
@@ -218,11 +218,11 @@ def init_routes_reports(app, db):
                 COUNT(DISTINCT CASE WHEN tf.SessionType = 'Game' THEN tf.FormationID END) AS TotalGameSessions,
                 SUM(CASE WHEN tf.SessionType = 'Game' THEN PI.ClubMemberID ELSE 0 END) AS TotalPlayersInGameSessions
             FROM
-                Location l
+                location l
                 LEFT JOIN team t ON l.LocationID = t.LocationID
-                LEFT JOIN FormationTeam ft ON t.TeamID = ft.TeamID
-                LEFT JOIN TeamFormation tf ON ft.FormationID = ft.FormationID
-                LEFT JOIN PlaysIn PI ON tf.FormationID = PI.FormationID
+                LEFT JOIN formationteam ft ON t.TeamID = ft.TeamID
+                LEFT JOIN teamformation tf ON ft.FormationID = ft.FormationID
+                LEFT JOIN playsin PI ON tf.FormationID = PI.FormationID
             WHERE
                 tf.Date BETWEEN '2025-01-01' AND '2025-05-31'
             GROUP BY
@@ -264,11 +264,11 @@ def init_routes_reports(app, db):
                         l.Name ASC SEPARATOR ', '
                 ) AS CurrentLocationNames
             FROM
-                ClubMember cm
-                LEFT JOIN PlaysIn PI ON cm.ClubMemberID = PI.ClubMemberID
-                LEFT JOIN ClubMemberLocation cml ON cm.ClubMemberID = cml.ClubMemberID
-                AND cml.EndDate IS NULL
-                LEFT JOIN Location l ON cml.LocationID = l.LocationID
+                clubmember cm
+                LEFT JOIN playsin PI ON cm.ClubMemberID = PI.ClubMemberID
+                LEFT JOIN clubmemberlocation cml ON cm.ClubMemberID = cml.ClubMemberID
+                    AND cml.EndDate IS NULL
+                LEFT JOIN location l ON cml.LocationID = l.LocationID
             WHERE
                 cm.Status = 'Active'
                 AND PI.FormationID IS NULL
@@ -308,13 +308,13 @@ def init_routes_reports(app, db):
                         l.Name ASC SEPARATOR ', '
                 ) AS CurrentLocationNames
             FROM
-                ClubMember cm
-                LEFT JOIN ClubMemberLocation cml ON cm.ClubMemberID = cml.ClubMemberID
-                AND (
-                    cml.EndDate IS NULL
-                    OR cml.EndDate < CURDATE()
-                )
-                LEFT JOIN Location l ON cml.LocationID = l.LocationID
+                clubmember cm
+                LEFT JOIN clubmemberlocation cml ON cm.ClubMemberID = cml.ClubMemberID
+                    AND (
+                        cml.EndDate IS NULL
+                        OR cml.EndDate < CURDATE()
+                    )
+                LEFT JOIN location l ON cml.LocationID = l.LocationID
             WHERE
                 cm.Status LIKE "Active"
                 AND TIMESTAMPDIFF(YEAR, cm.DOB, cm.DateJoined) < 18
@@ -348,11 +348,11 @@ def init_routes_reports(app, db):
                 cm.Email,
                 GROUP_CONCAT(l.Name ORDER BY l.Name ASC SEPARATOR ', ') AS CurrentLocationNames
             FROM
-                ClubMember cm
-                JOIN PlaysIn PI ON cm.ClubMemberID = PI.ClubMemberID
-                LEFT JOIN ClubMemberLocation cml ON cm.ClubMemberID = cml.ClubMemberID
+                clubmember cm
+                JOIN playsin PI ON cm.ClubMemberID = PI.ClubMemberID
+                LEFT JOIN clubmemberlocation cml ON cm.ClubMemberID = cml.ClubMemberID
                     AND (cml.EndDate IS NULL OR cml.EndDate < CURDATE())
-                LEFT JOIN Location l ON cml.LocationID = l.LocationID
+                LEFT JOIN location l ON cml.LocationID = l.LocationID
             WHERE
                 cm.Status LIKE "Active"
             GROUP BY
@@ -396,11 +396,11 @@ def init_routes_reports(app, db):
                 cm.Email,
                 GROUP_CONCAT(l.Name ORDER BY l.Name ASC SEPARATOR ', ') AS CurrentLocationNames
             FROM
-                ClubMember cm
-                LEFT JOIN PlaysIn PI ON cm.ClubMemberID = PI.ClubMemberID
-                LEFT JOIN ClubMemberLocation cml ON cm.ClubMemberID = cml.ClubMemberID
+                clubmember cm
+                LEFT JOIN playsin PI ON cm.ClubMemberID = PI.ClubMemberID
+                LEFT JOIN clubmemberlocation cml ON cm.ClubMemberID = cml.ClubMemberID
                     AND (cml.EndDate IS NULL OR cml.EndDate < CURDATE())
-                LEFT JOIN Location l ON cml.LocationID = l.LocationID
+                LEFT JOIN location l ON cml.LocationID = l.LocationID
             WHERE
                 cm.Status LIKE "Active"
                 AND PI.FormationID IS NOT NULL
@@ -439,13 +439,13 @@ def init_routes_reports(app, db):
                 fm.LastName,
                 fm.Phone
             FROM
-                FamilyMember fm
-                JOIN IsRelatedTo ir ON fm.FamilySSN = ir.FamilySSN
-                JOIN ClubMember cm ON ir.ClubMemberID = cm.ClubMemberID
-                JOIN Personnel p ON fm.FamilySSN = p.SSN
-                JOIN ClubMemberLocation cml ON cm.ClubMemberID = cml.ClubMemberID
+                familymember fm
+                JOIN isrelatedto ir ON fm.FamilySSN = ir.FamilySSN
+                JOIN clubmember cm ON ir.ClubMemberID = cm.ClubMemberID
+                JOIN personnel p ON fm.FamilySSN = p.SSN
+                JOIN clubmemberlocation cml ON cm.ClubMemberID = cml.ClubMemberID
                     AND (cml.EndDate IS NULL OR cml.EndDate < CURDATE())
-                JOIN OperatesAt op ON p.PersonnelID = op.PersonnelID
+                JOIN operatesat op ON p.PersonnelID = op.PersonnelID
                     AND (op.EndDate IS NULL OR op.EndDate < CURDATE())
             WHERE
                 cm.Status LIKE "Active"
@@ -479,12 +479,12 @@ def init_routes_reports(app, db):
                 c.Email,
                 l.Name AS LocationName
             FROM
-                ClubMember c
-                JOIN PlaysIn PI ON c.ClubMemberID = PI.ClubMemberID
-                JOIN TeamFormation tf ON PI.FormationID = tf.FormationID
-                JOIN FormationTeam ft ON tf.FormationID = ft.FormationID
-                JOIN Team t ON ft.TeamID = t.TeamID
-                LEFT JOIN Location l ON t.LocationID = l.LocationID
+                clubmember c
+                JOIN playsin PI ON c.ClubMemberID = PI.ClubMemberID
+                JOIN teamformation tf ON PI.FormationID = tf.FormationID
+                JOIN formationteam ft ON tf.FormationID = ft.FormationID
+                JOIN team t ON ft.TeamID = t.TeamID
+                LEFT JOIN location l ON t.LocationID = l.LocationID
             WHERE
                 c.Status = 'Active'
                 AND (
@@ -522,12 +522,12 @@ def init_routes_reports(app, db):
                 l.Name AS CurrentLocationName,
                 p.Role
             FROM
-                Personnel p
-                LEFT JOIN OperatesAt o ON p.PersonnelID = o.PersonnelID
+                personnel p
+                LEFT JOIN operatesat o ON p.PersonnelID = o.PersonnelID
                     AND (o.EndDate IS NULL OR o.EndDate < CURDATE())
-                LEFT JOIN Location l ON o.LocationID = l.LocationID
-                JOIN IsRelatedTo ir ON p.SSN = ir.FamilySSN
-                JOIN ClubMember cm ON ir.ClubMemberID = cm.ClubMemberID
+                LEFT JOIN location l ON o.LocationID = l.LocationID
+                JOIN isrelatedto ir ON p.SSN = ir.FamilySSN
+                JOIN clubmember cm ON ir.ClubMemberID = cm.ClubMemberID
             WHERE
                 p.Mandate LIKE "Volunteer"
                 AND cm.Type LIKE "Minor"
