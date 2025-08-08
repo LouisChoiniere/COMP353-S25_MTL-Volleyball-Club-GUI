@@ -7,7 +7,15 @@
     <ul>
         <li><a href="/reports/8">Location Details Report (Address, Members, Teams) (8)</a></li>
         <li><a href="/reports/9">Family Member and Associated Club Members Report (9)</a></li>
-        <li><a href="/reports/10">Team Formation Sessions Report for Given Location & Period (10)</a></li>
+        <li>
+            <form action="/reports/10" method="get" style="display:inline;">
+                Team Formation Sessions Report for Given Location & Period (10)
+                <input type="number" name="location_id" placeholder="Location ID" required>
+                <input type="date" name="start_date" required>
+                <input type="date" name="end_date" required>
+                <button class="button is-small" type="submit">View</button>
+            </form>
+        </li>
         <li><a href="/reports/11">Inactive Club Members with Multi-Location & Long-Term Membership (11)</a></li>
         <li><a href="/reports/12">Location Team Session Summary (Training & Games) (12)</a></li>
         <li><a href="/reports/13">Active Club Members Never Assigned to Team Sessions (13)</a></li>

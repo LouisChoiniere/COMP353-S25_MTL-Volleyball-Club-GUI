@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request
 from sqlalchemy import text
 
 def init_routes_reports(app, db):
@@ -118,8 +118,59 @@ def init_routes_reports(app, db):
 
     @app.route("/reports/10")
     def report_10():
-        # TODO: Implement this endpoint
-        pass
+        location_id = request.args.get('location_id')
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+
+        query = db.session.query(
+            db.column('HeadCoachFirstName'),
+            db.column('HeadCoachLastName'),
+            db.column('StartTime'),
+            db.column('Address'),
+            db.column('SessionType'),
+            db.column('TeamName'),
+            db.column('ScoreTeamA'),
+            db.column('ScoreTeamB'),
+            db.column('ClubMemberID'),
+            db.column('PlayerFirstName'),
+            db.column('PlayerLastName'),
+            db.column('RoleInTeam')
+        ).from_statement(text(f"""
+            SELECT
+                p.FirstName AS HeadCoachFirstName,
+                p.LastName AS HeadCoachLastName,
+                tf.StartTime,
+                tf.Address,
+                tf.SessionType,
+                t.Name AS TeamName,
+                tf.ScoreTeamA,
+                tf.ScoreTeamB,
+                pm.ClubMemberID,
+                cm.FirstName AS PlayerFirstName,
+                cm.LastName AS PlayerLastName,
+                pm.RoleInTeam
+            FROM
+                TeamFormation tf
+                JOIN FormationTeam ft ON tf.FormationID = ft.FormationID
+                JOIN Team t ON ft.TeamID = t.TeamID
+                JOIN Location l ON t.LocationID = l.LocationID
+                LEFT JOIN TeamCoach tc ON t.TeamID = tc.TeamID
+                LEFT JOIN Personnel p ON tc.PersonnelID = p.PersonnelID
+                JOIN PlaysIn pm ON tf.FormationID = pm.FormationID
+                JOIN ClubMember cm ON pm.ClubMemberID = cm.ClubMemberID
+            WHERE
+                l.LocationID = :location_id -- Replace with the desired location ID
+                AND tf.Date BETWEEN :start_date AND :end_date -- Replace with the desired date range
+            ORDER BY
+                tf.date ASC,
+                tf.StartTime ASC;
+        """)).params(location_id=location_id, start_date=start_date, end_date=end_date)
+
+        columns = query.column_descriptions
+        keys = [col['name'] for col in columns]
+        print(keys)
+
+        return render_template('reports/genericTableTemplate.html', keys=keys, data=query, title="Active Club Members Assigned to All Volleyball Roles")
 
     @app.route("/reports/11")
     def report_11():
